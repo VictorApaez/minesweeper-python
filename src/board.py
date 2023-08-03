@@ -38,6 +38,7 @@ class Board:
                             neighbors.append((x, y))
 
                 mine_count = 0
+                # iterate through neighbors and check if they are mines
                 for coords in neighbors:
                     x, y = coords
                     if self.board[x][y].is_mine:
