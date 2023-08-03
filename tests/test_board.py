@@ -53,3 +53,11 @@ def test_reveal_cell():
     mine_cell.is_mine = True
     with pytest.raises(MineRevealedError):
         board.reveal_cell(0, 1)
+
+def test_flag_cell():
+    board = Board(5, 5, 5)
+    cell = board.board[0][0]
+    board.flag_cell(0, 0)
+    assert cell.is_flagged
+    board.flag_cell(0, 0)
+    assert not cell.is_flagged
