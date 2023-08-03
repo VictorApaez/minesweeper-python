@@ -19,9 +19,28 @@ class Board:
     def place_mines(self):
         all_cells = [(i,j) for i in range(self.rows) for j in range(self.columns)]
         mines = random.sample(all_cells, self.mines)
-        #^^ if 5 mines then mines = a list of 5 random coordinates on the board
+        #^^ example: 5 mines then 'mines' = a list of 5 random coordinates on the board
 
         for mine in mines:
             i, j = mine
             self.board[i][j].is_mine = True
     
+    def calculate_neighboring_mines(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                
+                neighbors = []
+                #create a 3x3 grid around current cell (inclusive)
+                for x in range(i - 1, i + 2):
+                    for y in range(j - 1, j + 2):
+                         # bound check and exclude the current cell (only neighboring cells)
+                        if 0 <= x < self.rows and 0 <= y < self.columns and (x, y) != (i, j):
+                            neighbors.append((x, y))
+
+                mine_count = 0
+                for coords in neighbors:
+                    x, y = coords
+                    if self.board[x][y].is_mine:
+                        mine_count+=1
+
+                self.board[i][j].neighboring_mines = mine_count
