@@ -61,3 +61,10 @@ def test_flag_cell():
     assert cell.is_flagged
     board.flag_cell(0, 0)
     assert not cell.is_flagged
+
+def test_is_game_over():
+  board = Board(1, 1, 1)
+  assert not board.is_game_over()
+  board.board[0][0].is_mine = False
+  board.reveal_cell(0, 0)
+  assert board.is_game_over()
