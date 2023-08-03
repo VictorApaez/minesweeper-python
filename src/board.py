@@ -7,6 +7,7 @@ class Board:
         self.rows = rows
         self.columns = columns
         self.mines = mines 
+        self.game_over = False
         self.board = [[Cell() for _ in range(columns)] for _ in range(rows)]
         # ^^ 2D array
         # [
@@ -68,6 +69,6 @@ class Board:
 
  
     def flag_cell(self, row, column):
-        pass
+        self.board[row][column].flag()
     def is_game_over(self):
         pass
