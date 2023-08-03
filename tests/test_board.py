@@ -1,5 +1,6 @@
 import pytest
 from src.board import Board
+from src.cell import MineRevealedError
 
 def test_mine_placement():
     rows, columns, mines = 5, 5, 5
@@ -39,3 +40,16 @@ def test_neighboring_mines_count():
         for j in range(columns):
             if (i, j) not in [(0, 1), (1, 0), (1, 1)]:
                 assert board.board[i][j].neighboring_mines == 0, "Expected 0 neighboring mines"
+
+def test_reveal_cell():
+    board = Board(5, 5, 5)
+    
+    cell = board.board[0][0]
+    cell.is_mine = False
+    board.reveal_cell(0, 0)
+    assert cell.is_revealed
+
+    mine_cell = board.board[0][1]
+    mine_cell.is_mine = True
+    with pytest.raises(MineRevealedError):
+        board.reveal_cell(0, 1)
