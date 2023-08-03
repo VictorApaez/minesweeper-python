@@ -70,5 +70,16 @@ class Board:
  
     def flag_cell(self, row, column):
         self.board[row][column].flag()
+
     def is_game_over(self):
-        pass
+        # player revealed mine
+        if self.game_over:
+            return True
+        
+        # Player won
+        # all non mine cells have been revealed
+        for row in self.board:
+            for cell in row:
+              if not cell.is_mine and not cell.is_revealed:
+                return False 
+        return True        
