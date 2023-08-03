@@ -1,5 +1,6 @@
 from src.cell import Cell 
 import random
+from src.cell import MineRevealedError
 
 class Board:
     def __init__(self, rows, columns, mines):
@@ -45,3 +46,28 @@ class Board:
                         mine_count+=1
 
                 self.board[i][j].neighboring_mines = mine_count
+
+    def reveal_cell(self, row, column):
+      cell = self.board[row][column]
+      try:
+          cell.reveal()
+      except MineRevealedError:
+          self.game_over = True
+          raise
+
+      # no neighboring mines
+      if cell.neighboring_mines == 0:
+          #create a 3x3 grid around current cell (inclusive)
+          for r in range(row - 1, row + 2):
+              for c in range(column - 1, column + 2):
+                  # bound check
+                  if 0 <= r < self.rows and 0 <= c < self.columns and (r!= row and c!=column):
+                      # If a neighboring cell is not already revealed then reveal it
+                      if not self.board[r][c].is_revealed:
+                          self.reveal_cell(r, c)
+
+ 
+    def flag_cell(self, row, column):
+        pass
+    def is_game_over(self):
+        pass
