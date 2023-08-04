@@ -9,10 +9,13 @@ class Game:
     def start_game(self):
         self.start_time = time.time()
 
-    def reveal_cell(self, row, column):
+    def reveal_cell(self, row, column, callback=None):
         if self.start_time is None:
             self.start_game()
-        self.board.reveal_cell(row, column)
+            self.board.initialize(row, column)  # place the mines after the first click
+        self.board.reveal_cell(row, column, callback)
+
+
 
     def flag_cell(self, row, column):
         cell = self.board.board[row][column]
