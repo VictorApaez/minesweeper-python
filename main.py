@@ -14,6 +14,13 @@ class MinesweeperGUI:
                 button.bind("<Button-2>", lambda event, row=i, col=j: self.flag_cell(row, col))
                 button.grid(row=i, column=j)
                 self.buttons[i][j] = button
+                
+
+    def reveal_cell(self, row, col):
+        try:
+            self.game.reveal_cell(row, col, self.update_button_ui)
+        except MineRevealedError:
+            self.end_game()
 
     def update_button_ui(self, row, col, cell):
         button = self.buttons[row][col]
