@@ -15,16 +15,23 @@ class MinesweeperGUI:
                 button.grid(row=i, column=j)
                 self.buttons[i][j] = button
 
-    def flag_cell(self, row, col):
-        self.game.flag_cell(row, col)
-        cell = self.game.board.board[row][col]
-        self.update_button_ui(row, col, cell)
+    def update_button_ui(self, row, col, cell):
+        button = self.buttons[row][col]
+        if cell.is_revealed:
+            if cell.is_mine:
+                button.config(text="M", bg="red")
+            else:
+                button.config(text=str(cell.neighboring_mines), bg='blue')
+        elif cell.is_flagged:
+            button.config(text="F", bg="orange")
+        else:
+            button.config(text="", bg="white")
 
-    
-
-    
-
-    
+    def end_game(self):
+        for i in range(self.game.board.rows):
+            for j in range(self.game.board.columns):
+                if self.game.board.board[i][j].is_mine:
+                    self.buttons[i][j].config(text="M", bg="red")
 
 root = tk.Tk()
 gui = MinesweeperGUI(root)
