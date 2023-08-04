@@ -15,11 +15,11 @@ class Board:
         #   [Cell(), Cell(), Cell()]
         #   [Cell(), Cell(), Cell()]
         #  ]
-        self.place_mines()
-        self.calculate_neighboring_mines()
+        self.mines_placed = False
 
-    def place_mines(self):
+    def place_mines(self, exclude):
         all_cells = [(i,j) for i in range(self.rows) for j in range(self.columns)]
+        all_cells = [cell for cell in all_cells if cell not in exclude]
         mines = random.sample(all_cells, self.mines)
         #^^ example: 5 mines then 'mines' = a list of 5 random coordinates on the board
 
@@ -48,7 +48,15 @@ class Board:
 
                 self.board[i][j].neighboring_mines = mine_count
 
-    def reveal_cell(self, row, column):
+    def initialize(self, row, column):
+        if not self.mines_placed:
+            neighbors = [(x, y) for x in range(row - 1, row + 2) for y in range(column - 1, column + 2) 
+                         if 0 <= x < self.rows and 0 <= y < self.columns]
+            self.place_mines(neighbors)
+            self.calculate_neighboring_mines()
+            self.mines_placed = True
+
+    def reveal_cell(self, row, column, callback=None):
       cell = self.board[row][column]
       try:
           cell.reveal()
@@ -56,16 +64,21 @@ class Board:
           self.game_over = True
           raise
 
+      # callback to update UI
+      if callback:
+          callback(row, column, cell)
+
       # no neighboring mines
       if cell.neighboring_mines == 0:
           #create a 3x3 grid around current cell (inclusive)
           for r in range(row - 1, row + 2):
               for c in range(column - 1, column + 2):
                   # bound check
-                  if 0 <= r < self.rows and 0 <= c < self.columns and (r!= row and c!=column):
+                  if 0 <= r < self.rows and 0 <= c < self.columns and not (r == row and c == column):
                       # If a neighboring cell is not already revealed then reveal it
                       if not self.board[r][c].is_revealed:
-                          self.reveal_cell(r, c)
+                          self.reveal_cell(r, c, callback)
+
 
  
     def flag_cell(self, row, column):
