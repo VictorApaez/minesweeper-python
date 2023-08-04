@@ -15,6 +15,17 @@ class MinesweeperGUI:
                 button.grid(row=i, column=j)
                 self.buttons[i][j] = button
 
+    def flag_cell(self, row, col):
+        self.game.flag_cell(row, col)
+        cell = self.game.board.board[row][col]
+        self.update_button_ui(row, col, cell)
+
+    
+
+    
+
+    
+
 root = tk.Tk()
 gui = MinesweeperGUI(root)
 root.mainloop()
