@@ -35,3 +35,6 @@ class Game:
         if self.start_time is None:
             return 0
         return time.time() - self.start_time
+    
+    def has_won(self):
+        return self.board.has_won()
