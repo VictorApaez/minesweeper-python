@@ -33,7 +33,7 @@ The following OOP principles are demonstrated in this project:
 
 ## Prerequisites
 
-- Python 3.x
+- Python 3.11.4
 
 ## Installation
 
