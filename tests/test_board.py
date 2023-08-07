@@ -1,14 +1,21 @@
 import pytest
 from src.board import Board
 from src.cell import MineRevealedError
+import random
 
-def test_mine_placement():
+def test_place_mines():
     rows, columns, mines = 5, 5, 5
     board = Board(rows, columns, mines)
 
-    mine_count = sum(cell.is_mine for row in board.board for cell in row)
+    exclude = [(2, 2)]
+    random.seed(42)
+    board.place_mines(exclude)
 
-    assert mine_count == mines, f"Expected {mines} mines, but got {mine_count}"
+    mine_count = sum(cell.is_mine for row in board.board for cell in row)
+    assert mine_count == mines
+
+    assert not board.board[exclude[0][0]][exclude[0][1]].is_mine
+
 
 def test_neighboring_mines_count():
     # no mines
@@ -62,12 +69,40 @@ def test_flag_cell():
     board.flag_cell(0, 0)
     assert not cell.is_flagged
 
-def test_is_game_over():
-    board = Board(2, 2, 1)
-    assert not board.is_game_over()
-    for i in range(2):
-        for j in range(2):
-            if not board.board[i][j].is_mine:
-                board.board[i][j].is_mine = False
-                board.reveal_cell(i, j)
-    assert board.is_game_over()  
+def test_is_game_over_has_won():
+    board = Board(3, 3, 1)
+    # Reveal all non-mine cells
+    for row in range(board.rows):
+        for col in range(board.columns):
+            if not board.board[row][col].is_mine:
+                board.reveal_cell(row, col)
+    assert board.is_game_over() == True
+
+def test_is_game_over_mine_revealed():
+    board = Board(3, 3, 1)
+    board.initialize(0, 0)
+    # Triggering a game over by revealing a mine
+    mine_revealed = False
+    for row in range(board.rows):
+        for col in range(board.columns):
+            if board.board[row][col].is_mine:
+                try:
+                    board.reveal_cell(row, col)
+                except MineRevealedError:
+                    mine_revealed = True
+                break
+    assert mine_revealed
+    assert board.is_game_over() == True
+
+def test_has_won_false():
+    board = Board(3, 3, 1)
+    assert board.has_won() == False
+
+def test_has_won_true():
+    board = Board(3, 3, 1)
+    # Reveal all non-mine cells
+    for row in range(board.rows):
+        for col in range(board.columns):
+            if not board.board[row][col].is_mine:
+                board.reveal_cell(row, col)
+    assert board.has_won() == True
