@@ -86,13 +86,13 @@ class Board:
 
     def is_game_over(self):
         # player revealed mine
-        if self.game_over:
+        if self.game_over or self.has_won():
             return True
-        
-        # Player won
-        # all non mine cells have been revealed
-        for row in self.board:
-            for cell in row:
+        return False        
+    
+    def has_won(self):
+      for row in self.board:
+          for cell in row:
               if not cell.is_mine and not cell.is_revealed:
-                return False 
-        return True        
+                  return False
+      return True
