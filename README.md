@@ -2,6 +2,8 @@
 
 Minesweeper is a classic puzzle game implemented using Python, Tkinter, and Object-Oriented Programming (OOP). This project follows the principles of Test-Driven Development (TDD), with each class and its methods tested using pytest.
 
+<img src="./images/minesweeper.png" alt="image of minesweeper">
+
 ## Description
 
 This implementation of Minesweeper provides an engaging and interactive user experience. The game is divided into different classes representing the key components: `Cell`, `Board`, and `Game`. The user interface is designed using Tkinter.
