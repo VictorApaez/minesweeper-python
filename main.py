@@ -4,18 +4,21 @@ from src.cell import MineRevealedError
 from tkinter import messagebox
 
 class MinesweeperGUI:
-    def __init__(self, root, rows=5, columns=5, mines=3):
+    def __init__(self, root, rows=9, columns=9, mines=10):
         self.game = Game(rows, columns, mines)
         self.root = root
         self.buttons = [[None for _ in range(columns)] for _ in range(rows)]
         for i in range(rows):
             for j in range(columns):
-                button = tk.Label(root, text="", bg="white", relief="raised", height=2, width=4)
+                button = tk.Label(root, text="", bg="#90CAF9", relief="raised", height=4, width=4)
                 button.bind("<Button-1>", lambda event, row=i, col=j: self.reveal_cell(row, col))
                 button.bind("<Button-2>", lambda event, row=i, col=j: self.flag_cell(row, col))
-                button.grid(row=i, column=j)
+                button.grid(row=i, column=j, sticky="nsew", padx=0, pady=0)
                 self.buttons[i][j] = button
-                
+        for i in range(rows):
+            root.grid_rowconfigure(i, weight=1)
+            root.grid_columnconfigure(i, weight=1)
+
     def flag_cell(self, row, col):
         self.game.flag_cell(row, col)
         cell = self.game.board.board[row][col]
@@ -30,20 +33,20 @@ class MinesweeperGUI:
 
       except MineRevealedError:
           self.end_game()
-          self.root.after(100, lambda: messagebox.showinfo("Game Over", "You Lost!")) 
+          self.root.after(100, lambda: messagebox.showinfo("Game Over", "Boom! You Lost!")) 
 
 
     def update_button_ui(self, row, col, cell):
         button = self.buttons[row][col]
         if cell.is_revealed:
             if cell.is_mine:
-                button.config(text="M", bg="red")
+                button.config(text="M", bg="#D32F2F")
             else:
-                button.config(text=str(cell.neighboring_mines), bg='blue')
+                button.config(text=str(cell.neighboring_mines), bg='#A5D6A7')
         elif cell.is_flagged:
-            button.config(text="F", bg="orange")
+            button.config(text="F", bg="#FF9800")
         else:
-            button.config(text="", bg="white")
+            button.config(text="", bg="#90CAF9")
 
     def end_game(self):
         for i in range(self.game.board.rows):
@@ -56,5 +59,6 @@ class MinesweeperGUI:
             
 
 root = tk.Tk()
+root.title("Minesweeper")
 gui = MinesweeperGUI(root)
 root.mainloop()
